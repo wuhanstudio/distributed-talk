@@ -1,0 +1,26 @@
+version: "3.3"
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - ./docs:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.distributed.rule=Host(`distributed.wuhanstudio.uk`)"
+        - "traefik.http.routers.distributed.entrypoints=web"
+        - "traefik.http.services.distributed.loadbalancer.server.port=80"
+        # TLS
+        - "traefik.http.routers.distributeds.rule=Host(`distributed.wuhanstudio.uk`)"
+        - "traefik.http.routers.distributeds.entrypoints=websecure"
+        - "traefik.http.routers.distributeds.tls.certresolver=myhttpchallenge"
+        # Redirect
+        - "traefik.http.routers.distributed.middlewares=https_redirect"
+        - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
+    networks:
+      - traefik-public
+networks:
+  traefik-public:
+    external: true
