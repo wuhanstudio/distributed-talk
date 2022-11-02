@@ -33,23 +33,91 @@
                 <section data-auto-animate>
                     <span class="menu-title" style="display: none">Overview</span>
                     <h3 class="r-fit-text">Distributed Black-box Attack against Image Classification Cloud Services</h3>
-                    <p class="name" style="font-size: 25px;">Han Wu, Sareh Rowlands, and Johan Wahlstrom</p>
+                    <p class="name" style="font-size: 22px;">Han Wu, Sareh Rowlands, and Johan Wahlstrom</p>
                     <div class="r-hstack">
-                        <img class="" src="images/load_balancer.jpg" width="60%"> 
+                        <img class="" src="images/distribution.jpg" width="100%"> 
                     </div>
                     <p style="font-size: 22px;"><i class="fab fa-github"></i> &nbsp; <a href="https://github.com/wuhanstudio/adversarial-classification">Source Code</a></p>
-                    
+
                     <aside class="notes">
                     </aside>
                 </section>
-                
-                <!-- <section>
-                    <div class="r-hstack">
-                        <img src="images/image_specific.png" width="40%" />
-                        <img src="images/image_agnostic.png" class="fragment" width="40%" />
+
+                <section>
+                    <p class="r-fit-text">Deep Learning Models are vulnerable to Adversarial Attacks</p>
+                    <img src="images/fgsm.png" alt="" style="margin: 0;" width="60%">
+                    <div class="fragment">
+                        <p style="font-size: 26px;">White-box Attacks: fast and efficient.</p>
+                        <a href="https://detection.wuhanstudio.uk"><img src="images/demo.gif" alt="" style="margin: 0;" width="60%"></a>
                     </div>
-                </section> -->
-                
+                    <p style="font-size: 26px;" class="fragment" >Black-box Attacks: slow and rely on queries.</p>
+                    <ul style="font-size: 28px;">
+                        <li class="fragment">Increasing the attack succes rate.</li>
+                        <li class="fragment">Reducing the number of queries.</li>
+                        <li  class="fragment" style="color: blue;">Reducing the total attack time.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>How to accelerate black-box attacks?</h3>
+                    <div class="r-hstack">
+                        <img src="images/query.png" alt="" width="120%" style="margin-right: 20px;">
+                        <img src="images/average_query_time.png" alt="" width="80%">
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Common Mistakes</h3>
+                    <div class="r-vstack">
+                        <img src="images/local.jpg" width="100%" />
+                        <p style="font-size: 26px;">Most prior research used local models to test black-box attacks.</p>
+                        <img src="images/cloudapi.jpg" width="100%" />
+                        <p style="font-size: 26px;">We initiate the black-box attacks directly against cloud services.</p>
+                    </div>
+                </section>
+
+                <section data-background-video="images/deepapi.mp4" data-background-video-muted>
+                    <aside class="notes">
+                        Say for example, here we have an image classification cloud service, where we can upload images to the cloud server, and receive the classification results. Now, let's upload an image.<br />
+                        <br />
+                        Besides uploading images from the website, we can also use the API to do image classification on microcontrollers. <br />
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Horizontal Distribution</h3>
+                    <div class="r-hstack">
+                        <img src="images/horizontal.png" width="80%" />
+                        <img src="images/horizon.jpg" width="100%" />
+                    </div>
+                </section>
+
+                <section>
+                    <div class="r-hstack">
+                        <img src="images/simba_attack_horizontal_time.png" width="100%" />
+                        <img src="images/square_attack_horizontal_time.png" width="100%" />
+                        <img src="images/bandits_attack_horizontal_time.png" width="100%" />
+                    </div>
+                    <p style="font-size: 30px;">Horizontal distribution reduces the total attack time by a factor of five.</p>
+                </section>
+
+                <section>
+                    <h3>Vertical Distribution</h3>
+                    <div class="r-hstack">
+                        <img src="images/vertical.png" width="70%" />
+                        <img src="images/vertical.jpg" width="100%" />
+                    </div>
+                </section>
+
+                <section>
+                    <div class="r-hstack">
+                        <img src="images/simba_attack_vertical_margin.png" width="100%" />
+                        <img src="images/square_attack_vertical_margin.png" width="100%" />
+                        <img src="images/bandits_attack_vertical_margin.png" width="100%" />
+                    </div>
+                    <p style="font-size: 30px;">Vertical distribution achieves succeesful attacks much earlier.</p>
+                </section>
+
                 <section>
                     <h2>Thanks</h2>
                     <div class="r-vstack">
