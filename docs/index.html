@@ -40,6 +40,7 @@
                     <p style="font-size: 22px;"><i class="fab fa-github"></i> &nbsp; <a href="https://github.com/wuhanstudio/adversarial-classification">Source Code</a></p>
 
                     <aside class="notes">
+                        Hi, I'll present Distributed Black-box Attack against Image Classification Cloud Services. Black-box attacks can fool image classification models without access to model details. Our research intends to investigate if black-box attacks have become a real threat against image classification models deployed on cloud servers.
                     </aside>
                 </section>
 
@@ -56,31 +57,118 @@
                         <li class="fragment">Reducing the number of queries.</li>
                         <li  class="fragment" style="color: blue;">Reducing the total attack time.</li>
                     </ul>
+
+                    <aside class="notes">
+                        It is no more a secret that Deep Learning Models are vulnerable to Adversarial Attacks. We can generate human-unperceivable perturbations to fool image classification models. Existing adversarial attacks consits of white-box attacks and black-box attacks. <br />
+                        <br />
+                        White-box attacks have full access to model details, and are fast and efficient. They can attack deep learning mdoels in real time. On the other side, black-box attacks do not require access to model structure and weights, but they rely on queries and are slow. <br />
+                        <br />
+                        For black-box attacks, prior research has primarily focused on increasing the attack success rate and reducing the number of queries. However, another crucial factor is the time required to perform the attack. Black-box attacks can be a real threat if they are both time efficient and can achieve a high success rate. So we investigate if it is possible to reduce the total attack time.
+                    </aside>
                 </section>
 
                 <section>
-                    <h3>How to accelerate black-box attacks?</h3>
+                    <h3>How to accelerate Black-Box attacks?</h3>
                     <div class="r-hstack">
-                        <img src="images/query.png" alt="" width="120%" style="margin-right: 20px;">
-                        <img src="images/average_query_time.png" alt="" width="80%">
+                        <img src="images/query.png" class="fragment" alt="" width="120%" style="margin-right: 20px;">
+                        <img src="images/average_query_time.png" class="fragment" alt="" width="80%">
                     </div>
+                    <p style="font-size: 22px;" class="fragment"> Cloud APIs are deployed behind a load balancer that distributes the traffic across several servers.</p>
+                    <aside class="notes">
+                        Well, how can we accelerate Black-Box attacks? <br />
+                        <br />
+                        Black-box attacks rely on queries, which is time consuming. Our experimental results demonstrate that sending out 10 queries concurrently takes roughly the same time as sending out 1 query, which means that we can accelerate black-box attacks by sending out queries concurrently. The more queries we send, the less time each query takes in average. <br />
+                        <br />
+                        This is because modern cloud APIs are usually deployed behind a load balancer. The load balancer distributes the traffic across several servers, thus we can get query results of multiple concurrent request simultaneously. (2min) <br />
+                        <br />
+                        Before introducing the cloud service we attack, we notice that ...
+                    </aside>
                 </section>
 
                 <section>
-                    <h3>Common Mistakes</h3>
+                    <h3>Local Models & Cloud APIs</h3>
                     <div class="r-vstack">
-                        <img src="images/local.jpg" width="100%" />
-                        <p style="font-size: 26px;">Most prior research used local models to test black-box attacks.</p>
-                        <img src="images/cloudapi.jpg" width="100%" />
-                        <p style="font-size: 26px;">We initiate the black-box attacks directly against cloud services.</p>
+                        <div class="">
+                            <img src="images/local.jpg" width="100%" />
+                            <p style="font-size: 26px;">Most prior research used local models to test black-box attacks.</p>
+                        </div>
+                        <div class="fragment">
+                            <img src="images/cloudapi.jpg" width="100%" />
+                            <p style="font-size: 26px;">We initiate the black-box attacks directly against cloud services.</p>
+                        </div>
                     </div>
+
+                    <aside class="notes">
+                        Most prior research used local models to test black-box attacks because sending queries to cloud services is slow, while querying a local model with GPU acceleration is much faster. <br />
+                        <br />
+                        However, testing black-box attacks against local models could introduce several mistakes in the query process that gave their black-box attacks an unfair advantage. For example, prior research usually resizes input images to be the same shape as the model input and then applies the perturbation, which means they assume they have access to the input shape of the model. Some methods outperformed the state-of-the-art partially because these mistakes gave them access to information that should not be assumed to be available in black-box attacks. <br />
+                        <br />
+                        As a result, we initiate black-box attacks directly against cloud services to avoid making similar mistakes, and we apply the perturbation directly to the original input image. (3min)
+                    </aside>
+                </section>
+
+                <section>
+                    <h3 class="r-fit-text">Attacking Cloud APIs is more challenging than attacking local models</h3>
+                    <div class="r-vstack">
+                        <div class="">
+                            <img src="images/success_rate.png" alt="" width="90%" style="margin-bottom: 0;">
+                            <p style="font-size: 20px; margin: 0;">Attacking cloud APIs achieve less success rate than attacking local models.</p>
+                        </div>
+                        <div class="fragment">
+                            <img src="images/number_of_queries.png" alt="" width="90%" style="margin-bottom: 0;">
+                            <p style="font-size: 20px; margin: 0;">Attacking cloud APIs requires more queries than attacking local models.</p>
+                        </div>
+                    </div>
+
+                    <aside class="notes">
+                        Our experimental results demonstrate that for local search and gradient estimation methods, attacking cloud APIs achieve less success rate than attacking local models. In our experiments, we limit the number of queries for each image to be at most 1,000. As a result, for the baseline method, the attack success rate is very low, roughly 5%, so we do not see an obvious drop in success rate. <br />
+                        <br />
+                        Besides, attacking cloud APIs requires more queries than attacking local models. For the baseline method, we do not see an evident incrase because the attack success rate is relatively low. Most attacks consume the full query budget. 
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>DeepAPI - The Cloud API we attack</h3>
+                    <p style="font-size: 26px;">We open-source our image classification cloud service for research on black-box attacks.</p>
+
+                    <aside class="notes">
+                        The cloud API we attack is DeepAPI, an image classification cloud service we open-source for research on black-box attacks.
+                    </aside>
                 </section>
 
                 <section data-background-video="images/deepapi.mp4" data-background-video-muted>
                     <aside class="notes">
                         Say for example, here we have an image classification cloud service, where we can upload images to the cloud server, and receive the classification results. Now, let's upload an image.<br />
                         <br />
-                        Besides uploading images from the website, we can also use the API to do image classification on microcontrollers. <br />
+                        Besides uploading images from the website, we can also use the API to do image classification. <br />
+                        <br />
+                    </aside>
+                </section>
+
+                <section>
+                    <h3 style="margin: 0;">DeepAPI Deployment</h3>
+                    <br />
+                    <p style="margin-top: 0;">Using Docker</p>
+                    <pre data-id="code">
+                        <code class="bash" data-trim data-line-numbers>
+                            $ docker run -p 8080:8080 wuhanstudio/deepapi
+                            Serving on port 8080...
+                        </code>
+                    </pre>
+                    <p>Using Pip</p>
+                    <pre data-id="code">
+                        <code class="bash" data-trim data-line-numbers>
+                            $ pip install deepapi
+
+                            $ python -m deepapi
+                            Serving on port 8080...
+                        </code>
+                    </pre>
+
+                    <aside class="notes">
+                        To make the deployment of DeepAPI easier, we provide a Docker image as well as a python package which can be installed via pip install deepapi, and start the deepapi server using a single command. <br />
+                        <br/>
+                        Furthermore, we design two general frameworks, horizontal and vertical distribution, that can be applied to existing black-box attacks to reduce the total attack time. (5 min)
                     </aside>
                 </section>
 
@@ -90,15 +178,26 @@
                         <img src="images/horizontal.png" width="80%" />
                         <img src="images/horizon.jpg" width="100%" />
                     </div>
+
+                    <aside class="notes">
+                        Horizontal Distribuion sends out concurrent queries across images at the same iteration, so we receive the query results for different images simultaneously, and then move on to the next iteration. <br />
+                        <br />
+                        The benefit of horizontal distribution is that we do not need to redesign the black-box attacks, we only need to replace the original model query with concurrent queries. <br />
+                    </aside>
                 </section>
 
                 <section>
                     <div class="r-hstack">
-                        <img src="images/simba_attack_horizontal_time.png" width="100%" />
-                        <img src="images/square_attack_horizontal_time.png" width="100%" />
-                        <img src="images/bandits_attack_horizontal_time.png" width="100%" />
+                        <img src="images/horizontal_time.png" width="100%" />
+                        <!-- <img src="images/simba_attack_horizontal_time.png" width="100%" /> -->
+                        <!-- <img src="images/square_attack_horizontal_time.png" width="100%" /> -->
+                        <!-- <img src="images/bandits_attack_horizontal_time.png" width="100%" /> -->
                     </div>
                     <p style="font-size: 30px;">Horizontal distribution reduces the total attack time by a factor of five.</p>
+
+                    <aside class="notes">
+                        After applying horizontal distribution, we can see that the total attack time is reduced by a factor of five. The total time of attacking 100 images was reduced from over 20h to 4h. <br />
+                    </aside>
                 </section>
 
                 <section>
@@ -107,15 +206,44 @@
                         <img src="images/vertical.png" width="70%" />
                         <img src="images/vertical.jpg" width="100%" />
                     </div>
+
+                    <aside class="notes">
+                        On the other side, vertical distribution sends out concurrent queries across iterations for the same image. For each image, we generate multiple adversarial perturbations and send out queries concurrently across iterations. <br />
+                        <br />
+                        For vertical distribution, we need to redesign the black-box attacks to decouple the queries across iterations. <br /> 
+                        <br />
+                        In the research paper, we use both local search and gradient estimation methods as examples to illustrate how to re-design the algorithm to apply vertical distribution.<br /> 
+                    </aside>
                 </section>
 
                 <section>
                     <div class="r-hstack">
-                        <img src="images/simba_attack_vertical_margin.png" width="100%" />
-                        <img src="images/square_attack_vertical_margin.png" width="100%" />
-                        <img src="images/bandits_attack_vertical_margin.png" width="100%" />
+                        <img src="images/vertical_margin.png" width="100%" />
+                        <!-- <img src="images/simba_attack_vertical_margin.png" width="100%" /> -->
+                        <!-- <img src="images/square_attack_vertical_margin.png" width="100%" /> -->
+                        <!-- <img src="images/bandits_attack_vertical_margin.png" width="100%" /> -->
                     </div>
                     <p style="font-size: 30px;">Vertical distribution achieves succeesful attacks much earlier.</p>
+
+                    <aside class="notes">
+                        After applying vertical distribution, besides reducing the attack time, both local search and gradient estimation methods achieve early successful attacks, because the probability of the original prediction class drops faster. <br />
+                    </aside>
+                </section>
+
+                <section data-auto-animate>
+                    <span class="menu-title" style="display: none">Conclusion</span>
+                    <h4>Conclusion</h4>
+                    <div class="r-vstack">
+                        <img class="" src="images/distribution.jpg" width="100%"> 
+                        <img class="fragment" src="images/deepapi.png" width="100%"> 
+                    </div>
+
+                    <aside class="notes">
+                        In conclusion, our research demonstrates that it is possible to exploit load balancing to accelerate online black-box attacks against cloud services. <br />
+                        <br />
+                        And we open source our image classification cloud service to facilitate future research on distributed black-box attacks to test if black-box attacks have become a practical threat against machine learning models deployed on cloud servers. <br />
+                        <br />
+                    </aside>
                 </section>
 
                 <section>
@@ -125,6 +253,10 @@
                     </div>
                     <img src="images/qrcode.png" width="25%" />
                     <p style="font-size: 22px;"><i class="fab fa-github"></i> &nbsp; <a href="https://github.com/wuhanstudio/adversarial-classification">Source Code</a></p>
+
+                    <aside class="notes">
+                        You can find the source code and the slides on this website. Thank you. (7min)<br />
+                    </aside>
                 </section>
 
             </div>
